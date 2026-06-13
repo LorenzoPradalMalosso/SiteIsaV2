@@ -60,6 +60,15 @@ $video = !empty($youtubeUrl) ? getYoutubeEmbedUrl($youtubeUrl) : "";
     <title>Galeria</title>
     <link rel="stylesheet" href="../css/style.css">
     <script src="../js/script.js" defer></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('../sw.js').catch(() => {
+                    // Falha no registro de service worker não impede o funcionamento.
+                });
+            });
+        }
+    </script>
     <style>
         body.gallery-page {
             overflow-x: hidden;

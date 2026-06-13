@@ -107,15 +107,18 @@ $importantDates = [
         }
 
         .timer-unit {
-            min-height: 94px;
+            min-height: 120px;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            padding: 12px 8px;
+            align-items: center;
+            padding: 16px 12px;
             border: 1px solid rgba(232, 77, 117, .16);
             border-radius: 8px;
             text-align: center;
             background: rgba(255, 255, 255, .5);
+            box-sizing: border-box;
+            overflow: hidden;
         }
 
         body.dark .timer-unit {
@@ -124,10 +127,12 @@ $importantDates = [
 
         .timer-number {
             font-family: var(--number-font);
-            font-size: clamp(1.7rem, 5vw, 3.2rem);
-            line-height: .92;
+            font-size: clamp(1.6rem, 2.8vw, 2.6rem);
+            line-height: 1;
             font-weight: 700;
             color: var(--accent);
+            word-break: keep-all;
+            white-space: nowrap;
         }
 
         .timer-label {
@@ -150,6 +155,7 @@ $importantDates = [
 
             .timer-unit {
                 min-height: 112px;
+                padding: 14px 10px;
             }
         }
     </style>
