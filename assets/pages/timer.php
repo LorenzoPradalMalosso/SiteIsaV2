@@ -191,8 +191,6 @@ $importantDates = [
                                 <span class="timer-label">Segundos</span>
                             </div>
                         </div>
-
-                        <p class="timer-note"></p>
                     </article>
                 <?php endforeach; ?>
             </div>
@@ -205,7 +203,6 @@ $importantDates = [
         const timers = [...document.querySelectorAll(".timer-grid")].map((timerGrid) => ({
             targetDate: new Date(timerGrid.dataset.importantDate),
             timerMode: timerGrid.dataset.timerMode,
-            note: timerGrid.parentElement.querySelector(".timer-note"),
             fields: {
                 days: timerGrid.querySelector('[data-time="days"]'),
                 hours: timerGrid.querySelector('[data-time="hours"]'),
@@ -237,14 +234,6 @@ $importantDates = [
             timer.fields.hours.textContent = padTime(hours);
             timer.fields.minutes.textContent = padTime(minutes);
             timer.fields.seconds.textContent = padTime(seconds);
-            const timerMode = timer.timerMode;
-            const timerNote = timer.note;
-
-            if (timerMode === "until") {
-                timerNote.textContent = isFinished ? "Essa data especial já chegou." : "Faltam esses momentos para a nossa data especial.";
-            } else {
-                timerNote.textContent = isFinished ? "Ainda faltam esses momentos para essa data começar." : "Esse é o tempo desde a nossa data especial.";
-            }
         }
 
         function updateTimers() {

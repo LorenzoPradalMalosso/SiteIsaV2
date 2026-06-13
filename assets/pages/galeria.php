@@ -466,15 +466,18 @@ $video = !empty($youtubeUrl) ? getYoutubeEmbedUrl($youtubeUrl) : "";
     <script>
         const galleryMain = document.querySelector(".gallery-main");
         const galleryLoader = document.getElementById("gallery-loader");
-        const firstGalleryImage = document.querySelector(".gallery-slide.active img");
+        const galleryImages = Array.from(document.querySelectorAll(".gallery-content img"));
         const galleryLoaderStartedAt = performance.now();
         const minimumLoaderTime = 900;
+        const galleryLoadMaxTime = 15000;
         let galleryLoadingFinished = false;
+        let galleryLoadTimeout;
 
         function finishGalleryLoading() {
             if (galleryLoadingFinished || !galleryMain || !galleryMain.classList.contains("is-loading")) return;
 
             galleryLoadingFinished = true;
+            clearTimeout(galleryLoadTimeout);
 
             const elapsedTime = performance.now() - galleryLoaderStartedAt;
             const remainingTime = Math.max(0, minimumLoaderTime - elapsedTime);
@@ -489,18 +492,30 @@ $video = !empty($youtubeUrl) ? getYoutubeEmbedUrl($youtubeUrl) : "";
             }, remainingTime);
         }
 
-        if (firstGalleryImage) {
-            if (firstGalleryImage.complete) {
+        function preloadGalleryImages() {
+            if (galleryImages.length === 0) {
                 finishGalleryLoading();
-            } else {
-                firstGalleryImage.addEventListener("load", finishGalleryLoading, { once: true });
-                firstGalleryImage.addEventListener("error", finishGalleryLoading, { once: true });
-                window.addEventListener("load", finishGalleryLoading, { once: true });
-                setTimeout(finishGalleryLoading, 4500);
+                return;
             }
-        } else {
-            finishGalleryLoading();
+
+            const imagePromises = galleryImages.map((img) => new Promise((resolve) => {
+                const preload = new Image();
+                preload.src = img.src;
+
+                if (preload.complete) {
+                    resolve();
+                    return;
+                }
+
+                preload.addEventListener("load", resolve, { once: true });
+                preload.addEventListener("error", resolve, { once: true });
+            }));
+
+            Promise.all(imagePromises).then(finishGalleryLoading);
+            galleryLoadTimeout = setTimeout(finishGalleryLoading, galleryLoadMaxTime);
         }
+
+        preloadGalleryImages();
 
         const slides = document.querySelectorAll(".gallery-slide");
         let activeSlide = 0;
